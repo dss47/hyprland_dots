@@ -1,0 +1,3 @@
+function voice-agent --wraps="docker exec -d freepbx bash -c 'cd /opt/voice-agent && LD_LIBRARY_PATH=/opt/voice-agent/piper/numpy.libs nohup python3 -m agent.server >> /var/log/asterisk/ai_agent.log 2>&1 &'" --description "alias voice-agent=docker exec -d freepbx bash -c 'cd /opt/voice-agent && LD_LIBRARY_PATH=/opt/voice-agent/piper/numpy.libs nohup python3 -m agent.server >> /var/log/asterisk/ai_agent.log 2>&1 &'"
+    docker exec -d freepbx bash -c 'cd /opt/voice-agent && LD_LIBRARY_PATH=/opt/voice-agent/piper/numpy.libs nohup python3 -m agent.server >> /var/log/asterisk/ai_agent.log 2>&1 &' $argv
+end

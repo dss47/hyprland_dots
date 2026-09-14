@@ -1,0 +1,10 @@
+-- Performance environment
+hl.env("DXVK_CONFIG", "dxvk.syncInterval=0")
+hl.env("GTK_CURSOR_THEME", "material_light_cursors")
+hl.env("GTK_ICON_THEME", "Papirus-Dark")
+hl.env("GTK_THEME", "adw-gtk3-dark")
+hl.env("MESA_LOADER_DRIVER_OVERRIDE", "iris")
+hl.env("MESA_VK_WSI_PRESENT_MODE", "immediate")
+hl.env("WLR_DRM_NO_MODIFIERS", "1")
+hl.env("mesa_glthread", "true")
+hl.env("vblank_mode", "0")

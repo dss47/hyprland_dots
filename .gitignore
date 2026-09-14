@@ -1,0 +1,16 @@
+# Secrets & Clés API
+*.env
+whisper.env
+*.key
+aider.fish
+fish_variables
+
+# Logs & Historiques
+.aider*
+*.log
+
+# Caches & Thumbnails
+mpvpaper_thumbnails/
+ii.bak/
+__pycache__/
+*.pyc
