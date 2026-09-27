@@ -18,33 +18,31 @@ Item {
 
     implicitWidth: colLayout.implicitWidth
 
+    property var namePalette: ["#7dd87d", "#6aa8e8", "#e05561", "#e8b339"]
+    property color nameColor: namePalette[((monitor?.activeWorkspace?.id ?? 1) - 1) % 4]
+
+    // Friendly app name from desktop entries ("Gemini"), raw id as fallback
+    property string rawAppId: root.focusingThisMonitor && root.activeWindow?.activated && root.biggestWindow ?
+        root.activeWindow?.appId : (root.biggestWindow?.class ?? "")
+    property var activeDesktopEntry: root.rawAppId !== "" ? DesktopEntries.heuristicLookup(root.rawAppId) : null
+    property string friendlyAppName: (activeDesktopEntry?.name ?? "") !== "" ? activeDesktopEntry.name : (root.rawAppId !== "" ? root.rawAppId : Translation.tr("Desktop"))
+
     ColumnLayout {
         id: colLayout
 
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.right: parent.right
-        spacing: -4
+        spacing: 0
 
         StyledText {
             Layout.fillWidth: true
-            font.pixelSize: Appearance.font.pixelSize.smaller
-            color: Appearance.colors.colSubtext
-            elide: Text.ElideRight
-            text: root.focusingThisMonitor && root.activeWindow?.activated && root.biggestWindow ? 
-                root.activeWindow?.appId :
-                (root.biggestWindow?.class) ?? Translation.tr("Desktop")
-
-        }
-
-        StyledText {
-            Layout.fillWidth: true
+            font.family: "JetBrainsMono NFM"
             font.pixelSize: Appearance.font.pixelSize.small
-            color: Appearance.colors.colOnLayer0
+            color: root.nameColor
             elide: Text.ElideRight
-            text: root.focusingThisMonitor && root.activeWindow?.activated && root.biggestWindow ? 
-                root.activeWindow?.title :
-                (root.biggestWindow?.title) ?? `${Translation.tr("Workspace")} ${monitor?.activeWorkspace?.id ?? 1}`
+            text: root.friendlyAppName.toLowerCase()
+
         }
 
     }

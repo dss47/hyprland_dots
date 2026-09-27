@@ -24,6 +24,7 @@ Item {
     readonly property int workspaceGroup: Math.floor((effectiveActiveWorkspaceId - 1) / root.workspacesShown)
     property list<bool> workspaceOccupied: []
     property int widgetPadding: 4
+    property var wsPalette: ["#7dd87d", "#6aa8e8", "#e05561", "#e8b339"]
     property int workspaceButtonWidth: 26
     property real activeWorkspaceMargin: 2
     property real workspaceIconSize: workspaceButtonWidth * 0.69
@@ -228,7 +229,7 @@ Item {
                         elide: Text.ElideRight
                         color: (root.effectiveActiveWorkspaceId == button.workspaceValue) ? 
                             Appearance.m3colors.m3onPrimary : 
-                            (workspaceOccupied[index] ? Appearance.m3colors.m3onSecondaryContainer : 
+                            (workspaceOccupied[index] ? root.wsPalette[index % 4] : 
                                 Appearance.colors.colOnLayer1Inactive)
 
                         Behavior on opacity {
@@ -248,7 +249,7 @@ Item {
                         radius: width / 2
                         color: (root.effectiveActiveWorkspaceId == button.workspaceValue) ? 
                             Appearance.m3colors.m3onPrimary : 
-                            (workspaceOccupied[index] ? Appearance.m3colors.m3onSecondaryContainer : 
+                            (workspaceOccupied[index] ? root.wsPalette[index % 4] : 
                                 Appearance.colors.colOnLayer1Inactive)
 
                         Behavior on opacity {
@@ -267,13 +268,23 @@ Item {
                             id: mainAppIcon
                             anchors.bottom: parent.bottom
                             anchors.right: parent.right
-                            anchors.bottomMargin: (!root.showNumbers && Config.options?.bar.workspaces.showAppIcons) ? 
+                            anchors.bottomMargin: (!root.showNumbers && Config.options?.bar.workspaces.showAppIcons) ?
                                 (workspaceButtonWidth - workspaceIconSize) / 2 : workspaceIconMarginShrinked
-                            anchors.rightMargin: (!root.showNumbers && Config.options?.bar.workspaces.showAppIcons) ? 
+                            anchors.rightMargin: (!root.showNumbers && Config.options?.bar.workspaces.showAppIcons) ?
                                 (workspaceButtonWidth - workspaceIconSize) / 2 : workspaceIconMarginShrinked
 
                             source: workspaceButtonBackground.mainAppIconSource
                             implicitSize: (!root.showNumbers && Config.options?.bar.workspaces.showAppIcons) ? workspaceIconSize : workspaceIconSizeShrinked
+
+                            // Clip square icons to a circle so corners never poke out
+                            layer.enabled: true
+                            layer.effect: OpacityMask {
+                                maskSource: Rectangle {
+                                    width: mainAppIcon.width
+                                    height: mainAppIcon.height
+                                    radius: width / 2
+                                }
+                            }
 
                             Behavior on opacity {
                                 animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
@@ -292,6 +303,14 @@ Item {
                         Loader {
                             active: Config.options.bar.workspaces.monochromeIcons
                             anchors.fill: mainAppIcon
+                            layer.enabled: true
+                            layer.effect: OpacityMask {
+                                maskSource: Rectangle {
+                                    width: mainAppIcon.width
+                                    height: mainAppIcon.height
+                                    radius: width / 2
+                                }
+                            }
                             sourceComponent: Item {
                                 Desaturate {
                                     id: desaturatedIcon

@@ -19,8 +19,8 @@ Item {
 
         StyledText {
             font.family: "JetBrainsMono NFM"
-            font.pixelSize: Appearance.font.pixelSize.large
-            color: Appearance.colors.colOnLayer1
+            font.pixelSize: Appearance.font.pixelSize.normal
+            color: "#7dd87d"
             text: DateTime.time
         }
 

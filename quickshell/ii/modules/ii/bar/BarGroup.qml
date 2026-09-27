@@ -14,8 +14,8 @@ Item {
         id: background
         anchors {
             fill: parent
-            topMargin: root.vertical ? 0 : 4
-            bottomMargin: root.vertical ? 0 : 4
+            topMargin: root.vertical ? 0 : 5
+            bottomMargin: root.vertical ? 0 : 5
             leftMargin: root.vertical ? 4 : 0
             rightMargin: root.vertical ? 4 : 0
         }

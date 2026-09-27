@@ -3,6 +3,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Services.UPower
+import Quickshell.Services.SystemTray
 import qs
 import qs.services
 import qs.modules.common
@@ -16,6 +17,8 @@ Item { // Bar content region
     property var brightnessMonitor: Brightness.getMonitorForScreen(screen)
     property real useShortenedForm: (Appearance.sizes.barHellaShortenScreenWidthThreshold >= screen?.width) ? 2 : (Appearance.sizes.barShortenScreenWidthThreshold >= screen?.width) ? 1 : 0
     readonly property int centerSideModuleWidth: (useShortenedForm == 2) ? Appearance.sizes.barCenterSideModuleWidthHellaShortened : (useShortenedForm == 1) ? Appearance.sizes.barCenterSideModuleWidthShortened : Appearance.sizes.barCenterSideModuleWidth
+    // True wifi connection: ignore empty and loopback ("lo") pseudo-names
+    readonly property bool wifiConnected: Network.networkName !== "" && Network.networkName !== "lo"
 
     component VerticalBarSeparator: Rectangle {
         Layout.topMargin: Appearance.sizes.baseBarHeight / 3
@@ -100,18 +103,10 @@ Item { // Bar content region
                     }
                 }
             }
-
-            ActiveWindow {
-                Layout.leftMargin: 10 + (leftSidebarButton.visible ? 0 : Appearance.rounding.screenRounding)
-                Layout.rightMargin: Appearance.rounding.screenRounding
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                visible: false
-            }
         }
     }
 
-    Row { // Middle section - clock centered
+    Row { // Middle section - app name centered
         id: middleSection
         anchors {
             top: parent.top
@@ -120,36 +115,18 @@ Item { // Bar content region
         }
         spacing: 4
 
-        MouseArea {
-            id: rightCenterGroup
+        BarGroup {
             anchors.verticalCenter: parent.verticalCenter
-            implicitWidth: rightCenterGroupContent.implicitWidth
-            implicitHeight: rightCenterGroupContent.implicitHeight
+            padding: 12
 
-            onPressed: {
-                GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
+            Behavior on implicitWidth {
+                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
             }
 
-            BarGroup {
-                id: rightCenterGroupContent
-                anchors.fill: parent
-                padding: 12
-
-                ClockWidget {
-                    showDate: (Config.options.bar.verbose && root.useShortenedForm < 2)
-                    Layout.alignment: Qt.AlignVCenter
-                    Layout.fillWidth: true
-                }
-
-                UtilButtons {
-                    visible: (Config.options.bar.verbose && root.useShortenedForm === 0)
-                    Layout.alignment: Qt.AlignVCenter
-                }
-
-                BatteryIndicator {
-                    visible: (root.useShortenedForm < 2 && Battery.available)
-                    Layout.alignment: Qt.AlignVCenter
-                }
+            ActiveWindow {
+                Layout.fillHeight: true
+                Layout.maximumWidth: 350
+                visible: root.useShortenedForm === 0
             }
         }
     }
@@ -189,7 +166,7 @@ Item { // Bar content region
                 Layout.fillWidth: false
 
                 implicitWidth: indicatorsRowLayout.implicitWidth + 10 * 2
-                implicitHeight: Appearance.sizes.baseBarHeight - 8
+                implicitHeight: Appearance.sizes.baseBarHeight - 10
 
                 buttonRadius: Appearance.rounding.verysmall
                 colBackground: barRightSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : Appearance.colors.colLayer1
@@ -199,7 +176,7 @@ Item { // Bar content region
                 colBackgroundToggledHover: Appearance.colors.colSecondaryContainerHover
                 colRippleToggled: Appearance.colors.colSecondaryContainerActive
                 toggled: GlobalStates.sidebarRightOpen
-                property color colText: toggled ? Appearance.m3colors.m3onSecondaryContainer : Appearance.colors.colOnLayer0
+                property color colText: toggled ? Appearance.m3colors.m3onSecondaryContainer : "#e8b339"
 
                 Behavior on colText {
                     animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
@@ -225,7 +202,7 @@ Item { // Bar content region
                         MaterialSymbol {
                             text: "volume_off"
                             iconSize: Appearance.font.pixelSize.larger
-                            color: rightSidebarButton.colText
+                            color: "#e05561"
                         }
                     }
                     Revealer {
@@ -238,13 +215,13 @@ Item { // Bar content region
                         MaterialSymbol {
                             text: "mic_off"
                             iconSize: Appearance.font.pixelSize.larger
-                            color: rightSidebarButton.colText
+                            color: "#e05561"
                         }
                     }
                     HyprlandXkbIndicator {
                         Layout.alignment: Qt.AlignVCenter
                         Layout.rightMargin: indicatorsRowLayout.realSpacing
-                        color: rightSidebarButton.colText
+                        color: "#e05561"
                     }
                     Revealer {
                         reveal: Notifications.silent || Notifications.unread > 0
@@ -262,23 +239,59 @@ Item { // Bar content region
                     MaterialSymbol {
                         text: Network.materialSymbol
                         iconSize: Appearance.font.pixelSize.larger
-                        color: rightSidebarButton.colText
+                        color: "#e8b339"
+                    }
+                    StyledText {
+                        Layout.alignment: Qt.AlignVCenter
+                        Layout.leftMargin: 6
+                        Layout.maximumWidth: 120
+                        visible: root.wifiConnected
+                        transform: Translate { y: 1 }
+                        font.family: "JetBrainsMono NFM"
+                        font.pixelSize: Appearance.font.pixelSize.normal
+                        color: "#e8b339"
+                        elide: Text.ElideRight
+                        text: Network.networkName
                     }
                     MaterialSymbol {
-                        Layout.leftMargin: indicatorsRowLayout.realSpacing
+                        Layout.leftMargin: root.wifiConnected ? 8 : indicatorsRowLayout.realSpacing
                         visible: BluetoothStatus.available
                         text: BluetoothStatus.connected ? "bluetooth_connected" : BluetoothStatus.enabled ? "bluetooth" : "bluetooth_disabled"
                         iconSize: Appearance.font.pixelSize.larger
-                        color: rightSidebarButton.colText
+                        color: "#6aa8e8"
+                    }
+                    StyledText {
+                        Layout.alignment: Qt.AlignVCenter
+                        Layout.leftMargin: 3
+                        Layout.maximumWidth: 120
+                        visible: BluetoothStatus.connected
+                        transform: Translate { y: 1 }
+                        font.family: "JetBrainsMono NFM"
+                        font.pixelSize: Appearance.font.pixelSize.normal
+                        color: "#6aa8e8"
+                        elide: Text.ElideRight
+                        text: BluetoothStatus.firstActiveDevice?.name ?? ""
+                    }
+                    StyledText {
+                        Layout.alignment: Qt.AlignVCenter
+                        Layout.leftMargin: 8
+                        font.family: "JetBrainsMono NFM"
+                        font.pixelSize: Appearance.font.pixelSize.normal
+                        color: "#7dd87d"
+                        text: DateTime.time
+                        transform: Translate { y: 1 }
                     }
                 }
             }
 
-            SysTray {
-                visible: root.useShortenedForm === 0
+            BarGroup {
+                visible: root.useShortenedForm === 0 && SystemTray.items.values.length > 0
                 Layout.fillWidth: false
                 Layout.fillHeight: true
-                invertSide: Config?.options.bar.bottom
+                SysTray {
+                    showSeparator: false
+                    invertSide: Config?.options.bar.bottom
+                }
             }
 
             Item {
