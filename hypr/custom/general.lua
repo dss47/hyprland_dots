@@ -6,7 +6,7 @@ hl.config({ general = { gaps_in = 2, gaps_out = 4, border_size = 1, allow_tearin
             layout = "dwindle",
         },
     decoration = {
-            rounding = 15,
+            rounding = 8,
             blur = {
                 enabled = false,
                 size = 8,
@@ -44,7 +44,7 @@ hl.config({ general = { gaps_in = 2, gaps_out = 4, border_size = 1, allow_tearin
                 disable_while_typing = true,
                 tap_to_click = true,
                 clickfinger_behavior = false,
-                scroll_factor = 2,
+                scroll_factor = 1.0,
                 middle_button_emulation = false,
                 tap_and_drag = true,
             },

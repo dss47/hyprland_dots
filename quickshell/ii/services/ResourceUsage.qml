@@ -21,7 +21,15 @@ Singleton {
     property real swapUsedPercentage: swapTotal > 0 ? (swapUsed / swapTotal) : 0
     property real cpuUsage: 0
     property real cpuTemp: 45
+    property real cpuClockGhz: 2.8
+    property string cpuClockString: cpuClockGhz > 0 ? (cpuClockGhz.toFixed(2) + " GHz") : "--"
     property var previousCpuStats
+
+    property real memoryUsedGb: memoryUsed / (1024 * 1024)
+    property real memoryTotalGb: memoryTotal / (1024 * 1024)
+    property string memoryUsedString: memoryUsedGb.toFixed(1) + " GB"
+    property string memoryTotalString: memoryTotalGb.toFixed(1) + " GB"
+    property string memoryHoverString: memoryUsedGb.toFixed(1) + " GB of " + memoryTotalGb.toFixed(1) + " GB used"
 
     property string maxAvailableMemoryString: kbToGbString(ResourceUsage.memoryTotal)
     property string maxAvailableSwapString: kbToGbString(ResourceUsage.swapTotal)
@@ -69,6 +77,7 @@ Singleton {
             fileMeminfo.reload()
             fileStat.reload()
             fileCpuTemp.reload()
+            fileCpuFreq.reload()
 
             // Parse memory and swap usage
             const textMeminfo = fileMeminfo.text()
@@ -103,6 +112,15 @@ Singleton {
                 }
             }
 
+            // Parse CPU Frequency
+            const textFreq = fileCpuFreq.text()
+            if (textFreq) {
+                const rawFreq = parseInt(textFreq.trim(), 10)
+                if (!isNaN(rawFreq) && rawFreq > 0) {
+                    cpuClockGhz = rawFreq / 1000000
+                }
+            }
+
             root.updateHistories()
             interval = Config.options?.resources?.updateInterval ?? 3000
         }
@@ -110,7 +128,24 @@ Singleton {
 
 	FileView { id: fileMeminfo; path: "/proc/meminfo" }
     FileView { id: fileStat; path: "/proc/stat" }
-    FileView { id: fileCpuTemp; path: "/sys/class/thermal/thermal_zone8/temp" }
+    FileView { id: fileCpuTemp; path: "/sys/class/thermal/thermal_zone7/temp" }
+    FileView { id: fileCpuFreq; path: "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq" }
+
+    Process {
+        id: findCpuTempPathProc
+        command: ["bash", "-c", "for z in /sys/class/thermal/thermal_zone*; do [ \"$(cat $z/type 2>/dev/null)\" = \"x86_pkg_temp\" ] && echo -n \"$z/temp\" && exit 0; done; echo -n '/sys/class/thermal/thermal_zone7/temp'"]
+        running: true
+        stdout: StdioCollector {
+            id: tempPathCollector
+            onStreamFinished: {
+                const foundPath = tempPathCollector.text.trim()
+                if (foundPath.length > 0) {
+                    fileCpuTemp.path = foundPath
+                    fileCpuTemp.reload()
+                }
+            }
+        }
+    }
 
     Process {
         id: findCpuMaxFreqProc

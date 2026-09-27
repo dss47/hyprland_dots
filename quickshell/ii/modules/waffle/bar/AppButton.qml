@@ -17,12 +17,10 @@ BarButton {
     rightInset: 2
     implicitWidth: height - topInset - bottomInset + leftInset + rightInset
 
-    property real pressedScale: 5/6
+    property real pressedScale: 1 // was 5/6: scale anim forces re-raster on HD 620, keep instant
 
     onDownChanged: {
-        scaleAnim.duration = root.down ? 150 : 200
-        scaleAnim.easing.bezierCurve = root.down ? Looks.transition.easing.bezierCurve.easeIn : Looks.transition.easing.bezierCurve.easeOut
-        contentItem.scale = root.down ? root.pressedScale : 1 // If/When we do dragging, the scale is 1.25
+        contentItem.scale = 1 // no press animation on low-spec
     }
 
     background: Item {

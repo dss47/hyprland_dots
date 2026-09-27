@@ -18,17 +18,17 @@ BodyRectangle {
             fill: parent
             leftMargin: 32
             rightMargin: 32
-            topMargin: 25
-            bottomMargin: 30
+            topMargin: 16
+            bottomMargin: 16
         }
-        spacing: 26
+        spacing: 16
 
         PinnedApps {
             Layout.fillWidth: true
         }
 
         AllApps {
-            implicitHeight: 300 // for now
+            implicitHeight: 210 // fits 156px folders + label
         }
     }
 
@@ -37,8 +37,8 @@ BodyRectangle {
 
         BigAppGrid {
             Layout.fillWidth: true
-            columns: 8
-            desktopEntries: Config.options.launcher.pinnedApps.map(appId => DesktopEntries.byId(appId))
+            columns: 5
+            desktopEntries: Config.options.launcher.pinnedApps.map(appId => DesktopEntries.byId(appId)).filter(app => app)
         }
     }
 
@@ -49,8 +49,8 @@ BodyRectangle {
         AllAppsGrid {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.leftMargin: 32
-            Layout.rightMargin: 32
+            Layout.leftMargin: 16
+            Layout.rightMargin: 16
         }
     }
 

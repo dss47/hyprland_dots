@@ -6,11 +6,11 @@ hl.config({
         },
     },
     misc = {
-        background_color = "rgba(131314FF)",
+        background_color = "rgba(131315FF)",
     },
 })
 
 hl.window_rule({
     match        = { pin = 1 },
-    border_color = "rgba(c0c7d5AA) rgba(c0c7d577)",
+    border_color = "rgba(c2c6d6AA) rgba(c2c6d677)",
 })

@@ -25,18 +25,6 @@ Rectangle {
     }
 
     BarGroupRow {
-        id: bloatRow
-        anchors.left: parent.left
-        opacity: Config.options.waffles.bar.leftAlignApps ? 0 : 1
-        visible: opacity > 0
-        Behavior on opacity {
-            animation: Looks.transition.opacity.createObject(this)
-        }
-
-        WidgetsButton {}
-    }
-
-    BarGroupRow {
         id: appsRow
         anchors.left: undefined
         anchors.horizontalCenter: parent.horizontalCenter
@@ -56,19 +44,12 @@ Rectangle {
         }
 
         StartButton {}
-        SearchButton {}
-        TaskViewButton {}
         Tasks {}
     }
 
     BarGroupRow {
         id: systemRow
         anchors.right: parent.right
-        FadeLoader {
-            Layout.fillHeight: true
-            shown: Config.options.waffles.bar.leftAlignApps
-            sourceComponent: WidgetsButton {}
-        }
         Tray {}
         UpdatesButton {}
         SystemButton {}

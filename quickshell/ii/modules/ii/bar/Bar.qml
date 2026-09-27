@@ -53,9 +53,9 @@ Scope {
                 property bool mustShow: hoverRegion.containsMouse || superShow
                 exclusionMode: ExclusionMode.Ignore
                 exclusiveZone: (Config?.options.bar.autoHide.enable && (!mustShow || !Config?.options.bar.autoHide.pushWindows)) ? 0 :
-                    Appearance.sizes.baseBarHeight + (Config.options.bar.cornerStyle === 1 ? Appearance.sizes.hyprlandGapsOut : 0)
+                    Appearance.sizes.baseBarHeight - 4 + (Config.options.bar.cornerStyle === 1 ? Appearance.sizes.hyprlandGapsOut : 0)
                 WlrLayershell.namespace: "quickshell:bar"
-                implicitHeight: Appearance.sizes.barHeight + Appearance.rounding.screenRounding
+                implicitHeight: Appearance.sizes.barHeight + (Config.options.bar.cornerStyle === 0 ? Appearance.rounding.screenRounding : 0)
                 mask: Region {
                     item: hoverMaskRegion
                 }
@@ -90,7 +90,7 @@ Scope {
                         implicitHeight: Appearance.sizes.barHeight
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        anchors.top: parent.top
+                        anchors.verticalCenter: parent.verticalCenter
                     }
                     Loader {
                         id: roundDecorators

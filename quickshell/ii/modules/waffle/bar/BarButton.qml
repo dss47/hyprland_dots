@@ -12,8 +12,8 @@ AcrylicButton {
     property var middleClickAction: () => {}
 
     Layout.fillHeight: true
-    topInset: 4
-    bottomInset: 4
+    topInset: 6
+    bottomInset: 6
     leftInset: 0
     rightInset: 0
     horizontalPadding: 8

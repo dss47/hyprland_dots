@@ -19,7 +19,7 @@ WButton {
     property bool pinnedTaskbar: TaskbarApps.isPinned(root.desktopEntry.id);
 
     implicitWidth: 96
-    implicitHeight: 84
+    implicitHeight: 96
     horizontalPadding: 0
     verticalPadding: 0
     contentItem: ColumnLayout {
@@ -28,7 +28,7 @@ WButton {
             Layout.topMargin: 12
             Layout.alignment: Qt.AlignHCenter
             iconName: root.desktopEntry.icon
-            implicitSize: 34
+            implicitSize: 44
             tryCustomIcon: false
         }
         WText {

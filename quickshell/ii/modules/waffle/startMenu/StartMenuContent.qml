@@ -85,7 +85,7 @@ WBarAttachedPanelContent {
             SearchBar {
                 id: searchBar
                 Layout.fillWidth: true
-                implicitWidth: 832 // TODO: Make sizes naturally inferred
+                implicitWidth: 600 // Win11 compact
                 horizontalPadding: 32
                 // verticalPadding: root.searching ? 32 : 16 // TODO: make this not nuke the panel
                 Synchronizer on searching {
@@ -101,7 +101,7 @@ WBarAttachedPanelContent {
                 }
             }
             Item {
-                implicitHeight: root.searching ? 800 : 800 // TODO: Make sizes naturally inferred
+                implicitHeight: root.searching ? 560 : 560 // Win11 compact
                 Layout.fillWidth: true
                 Loader {
                     id: pageContentLoader

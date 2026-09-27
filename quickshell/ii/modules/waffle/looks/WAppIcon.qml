@@ -9,12 +9,12 @@ Kirigami.Icon {
     property bool separateLightDark: false
     property bool tryCustomIcon: true
     
-    property real implicitSize: 26
+    property real implicitSize: 32
     implicitWidth: implicitSize
     implicitHeight: implicitSize
 
-    animated: true
-    roundToIconSize: false
+    animated: false
+    roundToIconSize: true
     fallback: root.iconName
     source: tryCustomIcon ? `${Looks.iconsPath}/${root.iconName}${!root.separateLightDark ? "" : Looks.dark ? "-dark" : "-light"}.svg` : fallback
 

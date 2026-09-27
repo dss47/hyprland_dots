@@ -44,5 +44,5 @@ Scope {
     PanelLoader { component: SidebarRight {} }
     PanelLoader { extraCondition: Config.options.bar.enable && Config.options.bar.vertical; component: VerticalBar {} }
     PanelLoader { component: WallpaperSelector {} }
-    PanelLoader { component: WorkspaceOSD {} }
+    PanelLoader { extraCondition: false; component: WorkspaceOSD {} }
 }

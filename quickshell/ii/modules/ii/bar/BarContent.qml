@@ -59,22 +59,12 @@ Item { // Bar content region
         implicitWidth: leftSectionRowLayout.implicitWidth
         implicitHeight: Appearance.sizes.baseBarHeight
 
-        onScrollDown: Brightness.decreaseBrightness()
-        onScrollUp: Brightness.increaseBrightness()
-        onMovedAway: GlobalStates.osdBrightnessOpen = false
+        onScrollDown: {}
+        onScrollUp: {}
+        onMovedAway: {}
         onPressed: event => {
             if (event.button === Qt.LeftButton)
                 GlobalStates.sidebarLeftOpen = !GlobalStates.sidebarLeftOpen;
-        }
-
-        // Visual content
-        ScrollHint {
-            reveal: barLeftSideMouseArea.hovered
-            icon: Hyprsunset.gamma === 100 ? "light_mode" : "wb_twilight"
-            tooltipText: Translation.tr("Scroll to change brightness")
-            side: "left"
-            anchors.left: parent.left
-            anchors.verticalCenter: parent.verticalCenter
         }
 
         RowLayout {
@@ -89,17 +79,39 @@ Item { // Bar content region
                 colBackground: barLeftSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
             }
 
+            BarGroup {
+                Layout.alignment: Qt.AlignVCenter
+                Layout.leftMargin: 5
+                padding: workspacesWidget.widgetPadding
+
+                Workspaces {
+                    id: workspacesWidget
+                    Layout.fillHeight: true
+                    MouseArea {
+                        // Right-click to toggle overview
+                        anchors.fill: parent
+                        acceptedButtons: Qt.RightButton
+
+                        onPressed: event => {
+                            if (event.button === Qt.RightButton) {
+                                GlobalStates.overviewOpen = !GlobalStates.overviewOpen;
+                            }
+                        }
+                    }
+                }
+            }
+
             ActiveWindow {
                 Layout.leftMargin: 10 + (leftSidebarButton.visible ? 0 : Appearance.rounding.screenRounding)
                 Layout.rightMargin: Appearance.rounding.screenRounding
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                visible: root.useShortenedForm === 0
+                visible: false
             }
         }
     }
 
-    Row { // Middle section
+    Row { // Middle section - clock centered
         id: middleSection
         anchors {
             top: parent.top
@@ -108,56 +120,10 @@ Item { // Bar content region
         }
         spacing: 4
 
-        BarGroup {
-            id: leftCenterGroup
-            anchors.verticalCenter: parent.verticalCenter
-            implicitWidth: root.centerSideModuleWidth
-
-            Resources {
-                alwaysShowAllResources: root.useShortenedForm === 2
-                Layout.fillWidth: root.useShortenedForm === 2
-            }
-
-            Media {
-                visible: root.useShortenedForm < 2
-                Layout.fillWidth: true
-            }
-        }
-
-        VerticalBarSeparator {
-            visible: Config.options?.bar.borderless
-        }
-
-        BarGroup {
-            id: middleCenterGroup
-            anchors.verticalCenter: parent.verticalCenter
-            padding: workspacesWidget.widgetPadding
-
-            Workspaces {
-                id: workspacesWidget
-                Layout.fillHeight: true
-                MouseArea {
-                    // Right-click to toggle overview
-                    anchors.fill: parent
-                    acceptedButtons: Qt.RightButton
-
-                    onPressed: event => {
-                        if (event.button === Qt.RightButton) {
-                            GlobalStates.overviewOpen = !GlobalStates.overviewOpen;
-                        }
-                    }
-                }
-            }
-        }
-
-        VerticalBarSeparator {
-            visible: Config.options?.bar.borderless
-        }
-
         MouseArea {
             id: rightCenterGroup
             anchors.verticalCenter: parent.verticalCenter
-            implicitWidth: root.centerSideModuleWidth
+            implicitWidth: rightCenterGroupContent.implicitWidth
             implicitHeight: rightCenterGroupContent.implicitHeight
 
             onPressed: {
@@ -167,6 +133,7 @@ Item { // Bar content region
             BarGroup {
                 id: rightCenterGroupContent
                 anchors.fill: parent
+                padding: 12
 
                 ClockWidget {
                     showDate: (Config.options.bar.verbose && root.useShortenedForm < 2)
@@ -199,23 +166,13 @@ Item { // Bar content region
         implicitWidth: rightSectionRowLayout.implicitWidth
         implicitHeight: Appearance.sizes.baseBarHeight
 
-        onScrollDown: Audio.decrementVolume();
-        onScrollUp: Audio.incrementVolume();
-        onMovedAway: GlobalStates.osdVolumeOpen = false;
+        onScrollDown: {}
+        onScrollUp: {}
+        onMovedAway: {}
         onPressed: event => {
             if (event.button === Qt.LeftButton) {
                 GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
             }
-        }
-
-        // Visual content
-        ScrollHint {
-            reveal: barRightSideMouseArea.hovered
-            icon: "volume_up"
-            tooltipText: Translation.tr("Scroll to change volume")
-            side: "right"
-            anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
         }
 
         RowLayout {
@@ -228,14 +185,14 @@ Item { // Bar content region
                 id: rightSidebarButton
 
                 Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                Layout.rightMargin: Appearance.rounding.screenRounding
+                Layout.rightMargin: 5
                 Layout.fillWidth: false
 
                 implicitWidth: indicatorsRowLayout.implicitWidth + 10 * 2
-                implicitHeight: indicatorsRowLayout.implicitHeight + 5 * 2
+                implicitHeight: Appearance.sizes.baseBarHeight - 8
 
-                buttonRadius: Appearance.rounding.full
-                colBackground: barRightSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
+                buttonRadius: Appearance.rounding.verysmall
+                colBackground: barRightSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : Appearance.colors.colLayer1
                 colBackgroundHover: Appearance.colors.colLayer1Hover
                 colRipple: Appearance.colors.colLayer1Active
                 colBackgroundToggled: Appearance.colors.colSecondaryContainer

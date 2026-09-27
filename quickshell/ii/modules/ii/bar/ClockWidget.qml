@@ -14,9 +14,11 @@ Item {
     RowLayout {
         id: rowLayout
         anchors.centerIn: parent
+        anchors.verticalCenterOffset: 1
         spacing: 4
 
         StyledText {
+            font.family: "JetBrainsMono NFM"
             font.pixelSize: Appearance.font.pixelSize.large
             color: Appearance.colors.colOnLayer1
             text: DateTime.time
@@ -31,6 +33,7 @@ Item {
 
         StyledText {
             visible: root.showDate
+            font.family: "JetBrainsMono NFM"
             font.pixelSize: Appearance.font.pixelSize.small
             color: Appearance.colors.colOnLayer1
             text: DateTime.longDate

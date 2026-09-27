@@ -140,15 +140,30 @@ Item {
 
                             // ── 1. RAM Circular Gauge ──
                             Rectangle {
+                                id: ramGaugeCard
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 radius: 12
-                                color: Qt.rgba(1.0, 1.0, 1.0, 0.04)
+                                color: ramMa.containsMouse ? Qt.rgba(1.0, 1.0, 1.0, 0.08) : Qt.rgba(1.0, 1.0, 1.0, 0.04)
                                 border.width: 1
-                                border.color: Qt.rgba(1.0, 1.0, 1.0, 0.05)
+                                border.color: ramMa.containsMouse ? accentCol : Qt.rgba(1.0, 1.0, 1.0, 0.05)
+
+                                Behavior on color { ColorAnimation { duration: 150 } }
+                                Behavior on border.color { ColorAnimation { duration: 150 } }
 
                                 readonly property bool isHigh: ResourceUsage.memoryUsedPercentage >= 0.85
                                 readonly property color accentCol: isHigh ? "#ff5555" : "#89b4fa"
+
+                                MouseArea {
+                                    id: ramMa
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                }
+
+                                StyledToolTip {
+                                    extraVisibleCondition: ramMa.containsMouse
+                                    text: `${ResourceUsage.memoryUsedString} of ${ResourceUsage.memoryTotalString} used (${Math.round(ResourceUsage.memoryUsedPercentage * 100)}%)`
+                                }
 
                                 Item {
                                     anchors.centerIn: parent
@@ -178,9 +193,9 @@ Item {
 
                                         StyledText {
                                             Layout.alignment: Qt.AlignHCenter
-                                            text: Math.round(ResourceUsage.memoryUsedPercentage * 100) + "%"
+                                            text: ramMa.containsMouse ? ResourceUsage.memoryUsedString : (Math.round(ResourceUsage.memoryUsedPercentage * 100) + "%")
                                             color: "#ffffff"
-                                            font.pixelSize: 13
+                                            font.pixelSize: ramMa.containsMouse ? 11 : 13
                                             font.weight: Font.DemiBold
                                         }
                                     }
@@ -189,15 +204,30 @@ Item {
 
                             // ── 2. CPU Temperature Circular Gauge ──
                             Rectangle {
+                                id: tempGaugeCard
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 radius: 12
-                                color: Qt.rgba(1.0, 1.0, 1.0, 0.04)
+                                color: tempMa.containsMouse ? Qt.rgba(1.0, 1.0, 1.0, 0.08) : Qt.rgba(1.0, 1.0, 1.0, 0.04)
                                 border.width: 1
-                                border.color: Qt.rgba(1.0, 1.0, 1.0, 0.05)
+                                border.color: tempMa.containsMouse ? accentCol : Qt.rgba(1.0, 1.0, 1.0, 0.05)
+
+                                Behavior on color { ColorAnimation { duration: 150 } }
+                                Behavior on border.color { ColorAnimation { duration: 150 } }
 
                                 readonly property bool isHigh: ResourceUsage.cpuTemp >= 80
                                 readonly property color accentCol: isHigh ? "#ff5555" : (ResourceUsage.cpuTemp >= 70 ? "#fab387" : "#a6e3a1")
+
+                                MouseArea {
+                                    id: tempMa
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                }
+
+                                StyledToolTip {
+                                    extraVisibleCondition: tempMa.containsMouse
+                                    text: `CPU Temperature: ${ResourceUsage.cpuTemp}°C`
+                                }
 
                                 Item {
                                     anchors.centerIn: parent
@@ -238,15 +268,30 @@ Item {
 
                             // ── 3. CPU Load Circular Gauge ──
                             Rectangle {
+                                id: cpuGaugeCard
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 radius: 12
-                                color: Qt.rgba(1.0, 1.0, 1.0, 0.04)
+                                color: cpuMa.containsMouse ? Qt.rgba(1.0, 1.0, 1.0, 0.08) : Qt.rgba(1.0, 1.0, 1.0, 0.04)
                                 border.width: 1
-                                border.color: Qt.rgba(1.0, 1.0, 1.0, 0.05)
+                                border.color: cpuMa.containsMouse ? accentCol : Qt.rgba(1.0, 1.0, 1.0, 0.05)
+
+                                Behavior on color { ColorAnimation { duration: 150 } }
+                                Behavior on border.color { ColorAnimation { duration: 150 } }
 
                                 readonly property bool isHigh: ResourceUsage.cpuUsage >= 0.85
                                 readonly property color accentCol: isHigh ? "#ff5555" : "#cba6f7"
+
+                                MouseArea {
+                                    id: cpuMa
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                }
+
+                                StyledToolTip {
+                                    extraVisibleCondition: cpuMa.containsMouse
+                                    text: `CPU Clock: ${ResourceUsage.cpuClockString} (${Math.round(ResourceUsage.cpuUsage * 100)}% load)`
+                                }
 
                                 Item {
                                     anchors.centerIn: parent
@@ -269,16 +314,16 @@ Item {
 
                                         MaterialSymbol {
                                             Layout.alignment: Qt.AlignHCenter
-                                            text: "planner_review"
+                                            text: cpuMa.containsMouse ? "speed" : "planner_review"
                                             iconSize: 16
                                             color: parent.parent.parent.accentCol
                                         }
 
                                         StyledText {
                                             Layout.alignment: Qt.AlignHCenter
-                                            text: Math.round(ResourceUsage.cpuUsage * 100) + "%"
+                                            text: cpuMa.containsMouse ? ResourceUsage.cpuClockString : (Math.round(ResourceUsage.cpuUsage * 100) + "%")
                                             color: "#ffffff"
-                                            font.pixelSize: 13
+                                            font.pixelSize: cpuMa.containsMouse ? 10 : 13
                                             font.weight: Font.DemiBold
                                         }
                                     }

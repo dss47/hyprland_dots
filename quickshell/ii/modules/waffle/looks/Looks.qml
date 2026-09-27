@@ -14,7 +14,7 @@ Singleton {
     property QtObject radius
     property QtObject font
     property QtObject transition
-    property string iconsPath: `${Directories.assetsPath}/icons/fluent`
+    property string iconsPath: `${Directories.assetsPath}/icons/fluent_backup`
     property bool dark: Appearance.m3colors.darkmode
 
     readonly property bool transparencyEnabled: Config.options.appearance.transparency.enable
@@ -158,10 +158,10 @@ Singleton {
             property int strongest: Font.Bold
         }
         property QtObject pixelSize: QtObject {
-            property real normal: 11
-            property real large: 13
-            property real larger: 15
-            property real xlarger: 17
+            property real normal: 13
+            property real large: 14
+            property real larger: 16
+            property real xlarger: 18
         }
         property QtObject variableAxes: QtObject {
             property var ui: ({

@@ -19,9 +19,7 @@ AppButton {
         GlobalStates.sidebarLeftOpen = !GlobalStates.sidebarLeftOpen
     }
     onDownChanged: {
-        scaleAnim.duration = root.down ? 150 : 200
-        scaleAnim.easing.bezierCurve = root.down ? Looks.transition.easing.bezierCurve.easeIn : Looks.transition.easing.bezierCurve.easeOut
-        iconWidget.scale = root.down ? 5/6 : 1 // If/When we do dragging, the scale is 1.25
+        iconWidget.scale = 1 // instant on HD 620, no re-raster
     }
 
     contentItem: Item {

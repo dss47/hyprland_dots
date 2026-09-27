@@ -14,6 +14,7 @@ Rectangle {
     id: root
     property AggregatedAppCategoryModel aggregatedCategory
     property list<DesktopEntry> desktopEntries: [...DesktopEntries.applications.values.filter(app => {
+        if ("noDisplay" in app && app.noDisplay) return false;
         const appCategories = app.categories;
         const gridCategories = root.aggregatedCategory.categories;
         return appCategories.some(cat => gridCategories.indexOf(cat) !== -1);
@@ -65,7 +66,7 @@ Rectangle {
             id: categoryOpenButtonLoader
             // It's like this on the real thing - you get an invisible button if there's not enough items
             opacity: root.desktopEntries.length > 3 ? 1 : 0
-            active: true
+            active: root.desktopEntries.length > 3
             sourceComponent: CategoryOpenButton {
                 aggregatedCategory: root.aggregatedCategory
             }
@@ -92,7 +93,7 @@ Rectangle {
                 property: "x"
                 from: categoryFolderPopup.originPoint.x - categoryOpenButtonLoader.width * 5 / 2
                 to: categoryFolderPopup.windowCenterPoint.x - categoryFolderPopup.width / 2
-                duration: 300
+                duration: 150
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Looks.transition.easing.bezierCurve.easeIn
             }
@@ -101,16 +102,7 @@ Rectangle {
                 property: "y"
                 from: categoryFolderPopup.originPoint.y - categoryOpenButtonLoader.height * 3 / 2
                 to: categoryFolderPopup.windowCenterPoint.y - categoryFolderPopup.height / 2
-                duration: 300
-                easing.type: Easing.BezierSpline
-                easing.bezierCurve: Looks.transition.easing.bezierCurve.easeIn
-            }
-            NumberAnimation {
-                target: categoryFolderPopup
-                property: "scale"
-                from: 0
-                to: 1
-                duration: 300
+                duration: 150
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Looks.transition.easing.bezierCurve.easeIn
             }
@@ -121,7 +113,7 @@ Rectangle {
                 target: categoryFolderPopup
                 property: "x"
                 to: categoryFolderPopup.originPoint.x - categoryOpenButtonLoader.width * 5 / 2
-                duration: 200
+                duration: 100
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Looks.transition.easing.bezierCurve.easeOut
             }
@@ -129,16 +121,7 @@ Rectangle {
                 target: categoryFolderPopup
                 property: "y"
                 to: categoryFolderPopup.originPoint.y - categoryOpenButtonLoader.height * 3 / 2
-                duration: 200
-                easing.type: Easing.BezierSpline
-                easing.bezierCurve: Looks.transition.easing.bezierCurve.easeOut
-            }
-            NumberAnimation {
-                target: categoryFolderPopup
-                property: "scale"
-                from: 1
-                to: 0
-                duration: 200
+                duration: 100
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Looks.transition.easing.bezierCurve.easeOut
             }
@@ -243,13 +226,6 @@ Rectangle {
 
         onClicked: root.openCategoryFolder()
         contentItem: Item {
-            Behavior on scale {
-                NumberAnimation {
-                    id: scaleAnim
-                    easing.type: Easing.BezierSpline
-                    easing.bezierCurve: Looks.transition.easing.bezierCurve.easeIn
-                }
-            }
             GridLayout {
                 anchors.centerIn: parent
                 rows: 2
@@ -263,7 +239,7 @@ Rectangle {
                         required property DesktopEntry modelData
                         tryCustomIcon: false
                         iconName: modelData.icon
-                        implicitSize: 16
+                        implicitSize: 18
                     }
                 }
             }
@@ -283,18 +259,11 @@ Rectangle {
         }
 
         contentItem: Item {
-            Behavior on scale {
-                NumberAnimation {
-                    id: scaleAnim
-                    easing.type: Easing.BezierSpline
-                    easing.bezierCurve: Looks.transition.easing.bezierCurve.easeIn
-                }
-            }
             WAppIcon {
                 anchors.centerIn: parent
                 tryCustomIcon: false
                 iconName: smallGridAppButton.desktopEntry.icon
-                implicitSize: 34
+                implicitSize: 38
             }
         }
 
@@ -332,10 +301,10 @@ Rectangle {
         implicitWidth: 68
         implicitHeight: 68
 
-        property real pressedScale: 5 / 6
+        property real pressedScale: 1
 
         onDownChanged: {
-            contentItem.scale = root.down ? root.pressedScale : 1; // If/When we do dragging, the scale is 1.25
+            contentItem.scale = 1;
         }
     }
 }
